@@ -8,7 +8,7 @@ public interface WishlistService {
 
     void addToWishlist(Long customerId, WishlistEntry wishlistEntry);
 
-    void removeFromWishlist(Long customerId, String productId);
+    void removeFromWishlist(Long customerId, Long productId);
 
     List<WishlistEntry> getWishlist(Long customerId);
 }

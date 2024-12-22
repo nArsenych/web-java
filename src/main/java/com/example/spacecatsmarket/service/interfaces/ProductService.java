@@ -9,13 +9,13 @@ public interface ProductService {
 
     Product createProduct(Product product);
 
-    Optional<Product> getProductById(String productId);
+    Optional<Product> getProductById(Long productId);
 
-    boolean existsById(String productId);
+    boolean existsById(Long productId);
 
     List<Product> getAllProducts();
 
-    Product updateProduct(String productId, Product updatedProduct);
+    Product updateProduct(Long productId, Product updatedProduct);
 
-    void deleteProduct(String productId);
+    void deleteProduct(Long productId);
 }

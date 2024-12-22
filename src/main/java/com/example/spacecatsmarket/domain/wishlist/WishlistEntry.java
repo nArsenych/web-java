@@ -8,6 +8,6 @@ import lombok.Value;
 public class WishlistEntry {
 
     Long customerId;
-    String productId;
+    Long productId;
     boolean notifiedWhenAvailable;
 }

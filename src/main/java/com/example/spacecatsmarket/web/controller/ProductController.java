@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable String productId) {
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
         Product product = productService.getProductById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
         return ResponseEntity.ok(productMapper.toProductDto(product));
@@ -48,7 +48,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDto> updateProduct(
-            @PathVariable String productId,
+            @PathVariable Long productId,
             @RequestBody @Valid ProductDto productDto) {
         Product updatedProduct = productMapper.toProduct(productDto);
         Product product = productService.updateProduct(productId, updatedProduct);
@@ -56,7 +56,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable String productId) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         if (productService.existsById(productId)) {
             productService.deleteProduct(productId);
         }

@@ -1,5 +1,6 @@
 package com.example.spacecatsmarket.web.exception;
 
+import com.example.spacecatsmarket.featuretoggle.exception.FeatureToggleNotEnabledException;
 import com.example.spacecatsmarket.service.exception.*;
 import com.example.spacecatsmarket.web.exception.CatNotFoundException;
 import com.example.spacecatsmarket.web.exception.ParamsViolationDetails;
@@ -78,6 +79,15 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = forStatusAndDetail(BAD_REQUEST, ex.getMessage());
         problemDetail.setType(create("payment-client-failure"));
         problemDetail.setTitle("Payment Client Failed to Process Payment");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(FeatureToggleNotEnabledException.class)
+    ProblemDetail handleFeatureToggleNotEnabledException(FeatureToggleNotEnabledException ex) {
+        log.info("Feature is not enabled");
+        ProblemDetail problemDetail = forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("feature-disabled"));
+        problemDetail.setTitle("Feature is disabled");
         return problemDetail;
     }
 

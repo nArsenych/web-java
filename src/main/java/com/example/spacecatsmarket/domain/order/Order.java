@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class Order {
 
-    String id;
+    Long id;
     UUID transactionId;
     List<OrderEntry> entries;
     String cartId;

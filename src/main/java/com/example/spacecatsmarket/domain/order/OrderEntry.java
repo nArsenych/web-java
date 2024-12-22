@@ -10,5 +10,6 @@ public class OrderEntry {
 
     ProductType productType;
     int amount;
+    Long productId;
 
 }

@@ -7,6 +7,7 @@ import com.example.spacecatsmarket.dto.payment.PaymentClientResponseDto;
 import com.example.spacecatsmarket.service.interfaces.PaymentService;
 import com.example.spacecatsmarket.service.exception.PaymentClientFailedProcessPayment;
 import com.example.spacecatsmarket.web.mapper.PaymentServiceMapper;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Slf4j
 @Service
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
 
     @Value("${application.payment-service.timeout:5000}")

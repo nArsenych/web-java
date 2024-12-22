@@ -1,0 +1,133 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <!-- Category Table -->
+    <changeSet id="1-create-category-table" author="dev">
+        <createTable tableName="categories">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Product Table -->
+    <changeSet id="2-create-product-table" author="dev">
+        <createTable tableName="products">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="price" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stock" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="products"
+                                 constraintName="fk_product_category" referencedTableName="categories" referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- Customer Table -->
+    <changeSet id="3-create-customer-table" author="dev">
+        <createTable tableName="customers">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="TEXT"/>
+            <column name="phone_number" type="VARCHAR(15)"/>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Customer Preferred Channels Table -->
+    <changeSet id="4-create-customer-preferred-channels-table" author="dev">
+        <createTable tableName="customer_preferred_channels">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="channel" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="customer_preferred_channels"
+                                 constraintName="fk_customer_channels_customer" referencedTableName="customers" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="5-create-order-table" author="dev">
+        <createTable tableName="orders">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="transaction_id" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="cart_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="consumer_reference" type="VARCHAR(255)"/>
+            <column name="total_price" type="DOUBLE PRECISION">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <!-- Order Entries Table -->
+    <changeSet id="6-create-order-entries-table" author="dev">
+        <createTable tableName="order_entries">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_order_entries_order" referencedTableName="orders" referencedColumnNames="id"/>
+            </column>
+            <column name="product_id" type="BIGINT"/>
+            <column name="product_type" type="varchar(255)"/>
+            <column name="amount" type="integer"/>
+        </createTable>
+    </changeSet>
+
+
+    <!-- Wishlist Table -->
+    <changeSet id="7-create-wishlist-table" author="dev">
+        <createTable tableName="wishlist_entries">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="notified_when_available" type="BOOLEAN" defaultValueBoolean="false"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="wishlist_entries"
+                                 constraintName="fk_wishlist_customer" referencedTableName="customers" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="wishlist_entries"
+                                 constraintName="fk_wishlist_product" referencedTableName="products" referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

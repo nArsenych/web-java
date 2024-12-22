@@ -4,28 +4,40 @@ import com.example.spacecatsmarket.domain.order.Order;
 import com.example.spacecatsmarket.domain.order.OrderContext;
 import com.example.spacecatsmarket.domain.order.OrderEntry;
 import com.example.spacecatsmarket.domain.payment.PaymentTransaction;
+import com.example.spacecatsmarket.repository.OrderRepository;
+import com.example.spacecatsmarket.repository.entity.OrderEntity;
+import com.example.spacecatsmarket.repository.entity.OrderEntryEntity;
 import com.example.spacecatsmarket.service.interfaces.OrderService;
 import com.example.spacecatsmarket.service.interfaces.PaymentService;
 import com.example.spacecatsmarket.service.exception.PaymentTransactionFailed;
+import com.example.spacecatsmarket.web.mapper.OrderEntryMapper;
 import com.example.spacecatsmarket.web.mapper.PaymentServiceMapper;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.example.spacecatsmarket.common.PaymentStatus.FAILURE;
 
 @Service
 @Slf4j
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private final PaymentService paymentService;
     private final PaymentServiceMapper paymentMapper;
+    private final OrderEntryMapper orderEntryMapper;
+    private final OrderRepository orderRepository;
 
-    public OrderServiceImpl(PaymentService paymentService, PaymentServiceMapper paymentMapper) {
+
+    public OrderServiceImpl(PaymentService paymentService, PaymentServiceMapper paymentMapper, OrderEntryMapper orderEntryMapper, OrderRepository orderRepository) {
         this.paymentService = paymentService;
         this.paymentMapper = paymentMapper;
+        this.orderEntryMapper = orderEntryMapper;
+        this.orderRepository = orderRepository;
     }
 
 
@@ -36,22 +48,35 @@ public class OrderServiceImpl implements OrderService {
         if (FAILURE.equals(paymentTransaction.getStatus())) {
             throw new PaymentTransactionFailed(paymentTransaction.getId(), orderContext.getCartId());
         }
-        // TODO add mock for order service
-        return createOrderMock(orderContext.getCartId(),
-            orderContext.getEntries(),
-            orderContext.getTotalPrice(),
-            orderContext.getCustomerReference(),
-            paymentTransaction.getId());
+
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setId(null);
+        orderEntity.setTransactionId(paymentTransaction.getId());
+        orderEntity.setCartId(orderContext.getCartId());
+        orderEntity.setConsumerReference(orderContext.getCustomerReference());
+        orderEntity.setTotalPrice(orderContext.getTotalPrice());
+
+        List<OrderEntryEntity> entryEntities = orderContext.getEntries().stream()
+                .map(orderEntryMapper::toOrderEntryEntity)
+                .peek(entry -> entry.setOrder(orderEntity))
+                .collect(Collectors.toList());
+
+        orderEntity.setEntries(entryEntities);
+        OrderEntity savedOrder = orderRepository.save(orderEntity);
+
+        return createOrderMock(savedOrder);
     }
 
-    private Order createOrderMock(String cartId, List<OrderEntry> entries, Double totalPrice, String consumerReference, UUID transactionId) {
+    private Order createOrderMock(OrderEntity entity) {
         return Order.builder()
-            .id(UUID.randomUUID().toString())
-            .transactionId(transactionId)
-            .cartId(cartId)
-            .entries(entries)
-            .totalPrice(totalPrice)
-            .consumerReference(consumerReference)
-            .build();
+                .id(entity.getId())
+                .transactionId(entity.getTransactionId())
+                .cartId(entity.getCartId())
+                .consumerReference(entity.getConsumerReference())
+                .totalPrice(entity.getTotalPrice())
+                .entries(entity.getEntries().stream()
+                        .map(orderEntryMapper::toOrderEntry)
+                        .collect(Collectors.toList()))
+                .build();
     }
 }

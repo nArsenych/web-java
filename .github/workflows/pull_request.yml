@@ -16,21 +16,59 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up JDK 20 (you can change to another version if needed)
+      # Set up JDK 20
       - name: Set up JDK 20
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '20'
-          cache: 'maven' # Cache Maven dependencies
 
-      # Run Maven build and tests with coverage
-      - name: Build with Maven
-        run: mvn clean verify
+      # Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # Start PostgreSQL using Docker Compose
+      - name: Start PostgreSQL
+        run: docker-compose -f docker-compose.yml up -d
+
+      # Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL
+        run: |
+          echo "Waiting for PostgreSQL to be ready..."
+          for i in {1..10}; do
+            if docker exec $(docker-compose ps -q postgres) pg_isready -U postgres; then
+              echo "PostgreSQL is ready!";
+              exit 0;
+            fi
+            sleep 5;
+          done
+          echo "PostgreSQL failed to become ready";
+          exit 1;
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle.properties', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-
+
+      # Grant execute permission for Gradlew
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
+      # Run Gradle build and tests with coverage
+      - name: Run Gradle Build and Tests
+        run: ./gradlew clean build jacocoTestReport
 
       # Upload the JaCoCo test coverage report
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
           name: test-coverage-report
-          path: target/site/jacoco/index.html
+          path: build/reports/jacoco/test/html/index.html
