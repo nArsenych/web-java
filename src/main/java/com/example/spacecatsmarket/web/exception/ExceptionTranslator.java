@@ -2,8 +2,6 @@ package com.example.spacecatsmarket.web.exception;
 
 import com.example.spacecatsmarket.featuretoggle.exception.FeatureToggleNotEnabledException;
 import com.example.spacecatsmarket.service.exception.*;
-import com.example.spacecatsmarket.web.exception.CatNotFoundException;
-import com.example.spacecatsmarket.web.exception.ParamsViolationDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -18,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 
-import static com.example.spacecatsmarket.util.PaymentDetailsUtils.getValidationErrorsProblemDetail;
+import static com.example.spacecatsmarket.util.ProblemDetailsUtils.getValidationErrorsProblemDetail;
 import static java.net.URI.create;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -46,15 +44,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         return problemDetail;
     }
 
-    @ExceptionHandler(PaymentTransactionFailed.class)
-    ProblemDetail handlePaymentTransactionFailedException(PaymentTransactionFailed ex) {
-        log.info("Payment Transaction Failed");
-        ProblemDetail problemDetail = forStatusAndDetail(BAD_REQUEST, ex.getMessage());
-        problemDetail.setType(create("payment-refused"));
-        problemDetail.setTitle("Payment Transaction Failed to process");
-        return problemDetail;
-    }
-
     @ExceptionHandler(ProductNotFoundException.class)
     ProblemDetail handleProductNotFoundException(ProductNotFoundException ex) {
         log.info("Product Not Found exception raised");
@@ -70,15 +59,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = forStatusAndDetail(NOT_FOUND, ex.getMessage());
         problemDetail.setType(create("wishlist-entry-not-found"));
         problemDetail.setTitle("Wishlist Entry Not Found");
-        return problemDetail;
-    }
-
-    @ExceptionHandler(PaymentClientFailedProcessPayment.class)
-    ProblemDetail handlePaymentClientFailedProcessPayment(PaymentClientFailedProcessPayment ex) {
-        log.info("Payment Client Failed to Process Payment");
-        ProblemDetail problemDetail = forStatusAndDetail(BAD_REQUEST, ex.getMessage());
-        problemDetail.setType(create("payment-client-failure"));
-        problemDetail.setTitle("Payment Client Failed to Process Payment");
         return problemDetail;
     }
 

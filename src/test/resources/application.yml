@@ -3,13 +3,9 @@ spring:
     name: space-cats-market
 
 application:
-  greetings:
-    cosmo-cat:
-      name: cosmo-cat
-      message: Hello from space cat ${application.greetings.cosmo-cat.name}
-  payment-service:
+  order-audit-service:
     base-path: http://localhost:8089
-    payments: ${application.payment-service.base-path}/payment-service/v1/payments
+    orders: ${application.order-audit-service.base-path}/order-audit/v1/orders
   feature:
     toggles:
       galactic-products: false

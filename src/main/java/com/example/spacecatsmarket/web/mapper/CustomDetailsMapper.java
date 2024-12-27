@@ -14,6 +14,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CustomDetailsMapper {
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "phoneNumber", source = "phoneNumber")

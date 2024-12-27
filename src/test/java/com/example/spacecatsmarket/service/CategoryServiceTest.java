@@ -8,6 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = CategoryServiceImpl.class)
@@ -49,7 +52,7 @@ class CategoryServiceTest {
 
     @Test
     void shouldThrowExceptionIfCategoryNotFound() {
-        assertThrows(RuntimeException.class, () -> categoryService.getById(99L));
+        assertThrows(RuntimeException.class, () -> categoryService.getById(UUID.randomUUID()));
     }
 
     @Test

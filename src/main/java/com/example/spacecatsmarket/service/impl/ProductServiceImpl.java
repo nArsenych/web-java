@@ -14,23 +14,22 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private final Map<String, Product> productRepository = new HashMap<>();
+    private final Map<UUID, Product> productRepository = new HashMap<>();
 
     @Override
     public Product createProduct(Product product) {
         productRepository.put(product.getId(), product);
-        log.info("Product created with ID: {}", product.getId());
         return product;
     }
 
     @Override
-    public Optional<Product> getProductById(String productId) {
+    public Optional<Product> getProductById(UUID productId) {
         return Optional.ofNullable(Optional.ofNullable(productRepository.get(productId))
                 .orElseThrow(() -> new ProductNotFoundException(productId)));
     }
 
     @Override
-    public boolean existsById(String productId) {
+    public boolean existsById(UUID productId) {
         return productRepository.containsKey(productId);
     }
 
@@ -40,32 +39,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(String productId, Product updatedProduct) {
+    public Product updateProduct(UUID productId, Product updatedProduct) {
         if (!productRepository.containsKey(productId)) {
             throw new ProductNotFoundException(productId);
         }
         productRepository.put(productId, updatedProduct);
-        log.info("Product updated with ID: {}", productId);
         return updatedProduct;
     }
 
     @Override
-    public void deleteProduct(String productId) {
+    public void deleteProduct(UUID productId) {
         if (!productRepository.containsKey(productId)) {
             throw new ProductNotFoundException(productId);
         }
         productRepository.remove(productId);
-        log.info("Product deleted with ID: {}", productId);
-    }
-
-    private Product createProductMock(String name, String description, Double price, String category, int stock) {
-        return Product.builder()
-                .id(UUID.randomUUID().toString())
-                .name(name)
-                .description(description)
-                .price(price)
-                .category(category)
-                .stock(stock)
-                .build();
     }
 }

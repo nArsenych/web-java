@@ -13,21 +13,22 @@ import java.time.Duration;
 
 @Slf4j
 @Configuration
-public class RestClientConfiguration {
+public class OrderAuditRestClientConfiguration {
 
-    @Value("${application.payment-service.timeout:5000}")
+    @Value("${application.order-audit-service.timeout:5000}")
     private final int responseTimeout;
 
-    public RestClientConfiguration(@Value("${application.restclient.response-timeout:1000}") int responseTimeout) {
+    public OrderAuditRestClientConfiguration(@Value("${application.restclient.response-timeout:1000}") int responseTimeout) {
         this.responseTimeout = responseTimeout;
-        log.info("RestClientConfiguration initialized with response timeout: {} ms", responseTimeout);
+        log.info("OrderAuditRestClientConfiguration initialized with response timeout: {} ms", responseTimeout);
     }
 
-    @Bean("paymentRestClient")
-    public RestClient paymentRestClient() {
-        log.info("Creating RestClient bean with name 'paymentRestClient'");
+    @Bean("orderAuditRestClient")
+    public RestClient orderAuditRestClient() {
+        log.info("Creating RestClient bean with name 'orderAuditRestClient'");
         return RestClient.builder()
                 .requestFactory(getClientHttpRequestFactory(responseTimeout))
+                .baseUrl("http://localhost:8089/order-audit/v1") 
                 .build();
     }
 

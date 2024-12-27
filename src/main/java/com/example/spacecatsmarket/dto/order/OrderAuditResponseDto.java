@@ -4,11 +4,10 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.UUID;
-
 @Value
 @Builder
 @Jacksonized
-public class PlaceOrderResponseDto {
-    UUID orderId;
+public class OrderAuditResponseDto {
+    String id;
+    String status;
 }

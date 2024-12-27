@@ -5,10 +5,10 @@ networks:
     name: cluster
 
 services:
-  galactic-payment-mock:
-    container_name: galactic-payment-mock
+  galactic-order-mock:
+    container_name: galactic-order-mock
     build:
-      context: ./payment-mock
+      context: ./order-audit-mock
     networks:
       - services
     healthcheck:

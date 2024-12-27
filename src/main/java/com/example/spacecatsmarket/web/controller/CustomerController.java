@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @Validated
 @RequestMapping("/api/v1/customers")
@@ -28,7 +30,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDetailsDto> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<CustomerDetailsDto> getCustomerById(@PathVariable UUID id) {
         return ResponseEntity.ok(customDetailsMapper.toCustomerDetailsDto(customerService.getCustomerDetailsById(id)));
     }
 

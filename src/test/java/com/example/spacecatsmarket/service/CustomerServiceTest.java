@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +21,8 @@ class CustomerServiceTest {
     @Autowired
     private CustomerService customerService;
 
+    private static final UUID CUSTOMER_ID = UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479");
+
     @Test
     void shouldGetAllCustomerDetails() {
         List<CustomerDetails> customers = customerService.getAllCustomerDetails();
@@ -29,14 +32,15 @@ class CustomerServiceTest {
 
     @Test
     void shouldGetCustomerDetailsById() {
-        CustomerDetails customer = customerService.getCustomerDetailsById(1L);
+        CustomerDetails customer = customerService.getCustomerDetailsById(CUSTOMER_ID);
 
         assertNotNull(customer);
-        assertEquals(1L, customer.getId());
+        assertEquals(CUSTOMER_ID, customer.getId());
     }
 
     @Test
     void shouldThrowExceptionIfCustomerNotFound() {
-        assertThrows(CustomerNotFoundException.class, () -> customerService.getCustomerDetailsById(99L));
+        UUID nonExistentId = UUID.randomUUID();
+        assertThrows(CustomerNotFoundException.class, () -> customerService.getCustomerDetailsById(nonExistentId));
     }
 }

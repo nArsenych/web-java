@@ -14,10 +14,10 @@ import java.util.List;
 public class PlaceOrderRequestDto {
 
     @NotNull(message = "Entries cannot be null")
-    List<OrderEntryDto> entries; // List of order entries
+    List<OrderEntryDto> entries;
 
     @NotNull(message = "Total price cannot be null")
     @Min(value = 0)
-    Double totalPrice; // Total price after any discounts or fees
+    Double totalPrice;
 
 }
