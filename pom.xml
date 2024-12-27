@@ -128,11 +128,23 @@
       <version>${wiremock.version}</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy</artifactId>
-      <version>1.14.19</version> <!-- Убедитесь, что версия актуальная -->
+      <version>1.14.19</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock-jre8</artifactId>
+      <version>2.35.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+          <groupId>org.aspectj</groupId>
+          <artifactId>aspectjweaver</artifactId>
+          <version>1.9.22.1</version>
+      </dependency>
   </dependencies>
 
   <build>

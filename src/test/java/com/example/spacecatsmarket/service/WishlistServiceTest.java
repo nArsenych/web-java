@@ -1,7 +1,6 @@
 package com.example.spacecatsmarket.service;
 
 import com.example.spacecatsmarket.domain.wishlist.WishlistEntry;
-import com.example.spacecatsmarket.service.exception.WishlistEntryNotFoundException;
 import com.example.spacecatsmarket.service.impl.WishlistServiceImpl;
 import com.example.spacecatsmarket.service.interfaces.WishlistService;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,10 +20,12 @@ class WishlistServiceTest {
     @Autowired
     private WishlistService wishlistService;
 
-    private static final Long CUSTOMER_ID = 1L;
+    private static final UUID CUSTOMER_ID = UUID.fromString("b271d812-94bf-4931-9e7d-274fbfba65b3");
+    private static final UUID PRODUCT_ID = UUID.fromString("a60a023a-b2c5-4287-bf7d-8a9f217e6a58");
+
     private static final WishlistEntry DEFAULT_ENTRY = WishlistEntry.builder()
             .customerId(CUSTOMER_ID)
-            .productId("product-123")
+            .productId(PRODUCT_ID)
             .notifiedWhenAvailable(true)
             .build();
 
@@ -49,8 +51,8 @@ class WishlistServiceTest {
 
     @Test
     void shouldNotThrowExceptionWhenRemovingNonExistentProduct() {
-        Long customerId = 1L;
-        String nonExistentProductId = "99999";
+        UUID customerId = UUID.randomUUID();
+        UUID nonExistentProductId = UUID.randomUUID();
 
         assertDoesNotThrow(() -> wishlistService.removeFromWishlist(customerId, nonExistentProductId));
     }

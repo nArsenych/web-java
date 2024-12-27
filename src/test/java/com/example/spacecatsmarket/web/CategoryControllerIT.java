@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -26,13 +28,11 @@ class CategoryControllerIT extends AbstractIt {
     private ObjectMapper objectMapper;
 
     private final CategoryDto TEST_CATEGORY = CategoryDto.builder()
-            .id(null)
             .name("TestCategory")
             .description("Test description")
             .build();
 
     private final CategoryDto UPDATED_TEST_CATEGORY = CategoryDto.builder()
-            .id(null)
             .name("UpdatedTestCategory")
             .description("Updated Test description")
             .build();
@@ -56,9 +56,19 @@ class CategoryControllerIT extends AbstractIt {
 
     @Test
     void shouldGetCategoryById() throws Exception {
-        mockMvc.perform(get("/api/v1/categories/{id}", 1L))
+        String createdCategory = mockMvc.perform(post("/api/v1/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(TEST_CATEGORY)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L));
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        UUID categoryId = UUID.fromString(objectMapper.readTree(createdCategory).get("id").asText());
+
+        mockMvc.perform(get("/api/v1/categories/{id}", categoryId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(categoryId.toString()));
     }
 
     @Test
@@ -71,7 +81,7 @@ class CategoryControllerIT extends AbstractIt {
                 .getResponse()
                 .getContentAsString();
 
-        Long categoryId = objectMapper.readTree(createdCategory).get("id").asLong();
+        UUID categoryId = UUID.fromString(objectMapper.readTree(createdCategory).get("id").asText());
 
         mockMvc.perform(put("/api/v1/categories/{id}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -80,10 +90,19 @@ class CategoryControllerIT extends AbstractIt {
                 .andExpect(jsonPath("$.name").value(UPDATED_TEST_CATEGORY.getName()));
     }
 
-
     @Test
     void shouldDeleteCategory() throws Exception {
-        mockMvc.perform(delete("/api/v1/categories/{id}", 1L))
+        String createdCategory = mockMvc.perform(post("/api/v1/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(TEST_CATEGORY)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        UUID categoryId = UUID.fromString(objectMapper.readTree(createdCategory).get("id").asText());
+
+        mockMvc.perform(delete("/api/v1/categories/{id}", categoryId))
                 .andExpect(status().isNoContent());
     }
 }

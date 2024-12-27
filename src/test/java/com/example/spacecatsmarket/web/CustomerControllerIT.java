@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,6 +29,7 @@ class CustomerControllerIT extends AbstractIt {
     private ObjectMapper objectMapper;
 
     private final CustomerDetailsDto TEST_CUSTOMER = CustomerDetailsDto.builder()
+            .id(UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479"))
             .name("Test Customer")
             .address("Sector 5, Planet Zeta, Quadrant 12")
             .phoneNumber("123-456-7890")
@@ -47,7 +49,15 @@ class CustomerControllerIT extends AbstractIt {
     @Test
     @DisplayName("Should fetch a single customer by ID successfully")
     void shouldGetCustomerById() throws Exception {
-        mockMvc.perform(get("/api/v1/customers/{id}", 1L))
+        String createdCustomer = objectMapper.writeValueAsString(TEST_CUSTOMER);
+
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(createdCustomer));
+
+        UUID customerId = UUID.fromString(objectMapper.readTree(createdCustomer).get("id").asText());
+
+        mockMvc.perform(get("/api/v1/customers/{id}", customerId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Alice Johnson"))
                 .andExpect(jsonPath("$.address").value("123 Cosmic Lane, Catnip City"))

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -18,7 +19,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category create(Category category) {
         category = Category.builder()
-                .id((long) (mockCategories.size() + 1))
+                .id(UUID.randomUUID())
                 .name(category.getName())
                 .description(category.getDescription())
                 .build();
@@ -28,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getById(Long id) {
+    public Category getById(UUID id) {
         return mockCategories.stream()
                 .filter(category -> category.getId().equals(id))
                 .findFirst()
@@ -41,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category update(Long id, Category updatedCategory) {
+    public Category update(UUID id, Category updatedCategory) {
         Optional<Category> existingCategory = mockCategories.stream()
                 .filter(category -> category.getId().equals(id))
                 .findFirst();
@@ -64,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         boolean removed = mockCategories.removeIf(category -> category.getId().equals(id));
         if (!removed) {
             throw new RuntimeException("Category not found with id: " + id);

@@ -9,18 +9,8 @@ import org.springframework.context.annotation.Bean;
 public class MappersTestConfiguration {
 
     @Bean
-    public PaymentServiceMapper paymentServiceMapper() {
-        return Mappers.getMapper(PaymentServiceMapper.class);
-    }
-
-    @Bean
     public OrderDtoMapper orderDtoMapper() {
         return Mappers.getMapper(OrderDtoMapper.class);
-    }
-
-    @Bean
-    public OrderEntryMapper orderEntryMapper() {
-        return Mappers.getMapper(OrderEntryMapper.class);
     }
 
     @Bean

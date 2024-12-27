@@ -4,18 +4,19 @@ import com.example.spacecatsmarket.domain.product.Product;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ProductService {
 
     Product createProduct(Product product);
 
-    Optional<Product> getProductById(String productId);
+    Optional<Product> getProductById(UUID productId);
 
-    boolean existsById(String productId);
+    boolean existsById(UUID productId);
 
     List<Product> getAllProducts();
 
-    Product updateProduct(String productId, Product updatedProduct);
+    Product updateProduct(UUID productId, Product updatedProduct);
 
-    void deleteProduct(String productId);
+    void deleteProduct(UUID productId);
 }

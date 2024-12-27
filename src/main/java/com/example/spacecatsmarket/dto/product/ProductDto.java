@@ -9,13 +9,14 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.UUID;
+
 @Value
 @Builder
 @Jacksonized
 public class ProductDto {
 
-    @NotNull(message = "Product ID cannot be null")
-    String id;
+    UUID id;
 
     @NotNull(message = "Product name cannot be null")
     @Size(min = 2, max = 100, message = "Product name must be between 2 and 100 characters")

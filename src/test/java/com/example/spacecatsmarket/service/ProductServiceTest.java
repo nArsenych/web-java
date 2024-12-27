@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(OrderAnnotation.class)
 class ProductServiceTest {
 
-    private static final String PRODUCT_ID = "test-product-id";
+    private static final UUID PRODUCT_ID = UUID.fromString("a60a023a-b2c5-4287-bf7d-8a9f217e6a58");
     private static final Product DEFAULT_PRODUCT = buildProduct(PRODUCT_ID);
 
     @Autowired
@@ -70,7 +71,7 @@ class ProductServiceTest {
 
         Product updatedProduct = Product.builder()
                 .id(PRODUCT_ID)
-                .name("Updated Product")
+                .name("Updated galaxy Product")
                 .description("Updated Description")
                 .price(120.0)
                 .category("Updated Category")
@@ -98,13 +99,13 @@ class ProductServiceTest {
     @Test
     @Order(6)
     void shouldThrowExceptionWhenProductNotFound() {
-        assertThrows(ProductNotFoundException.class, () -> productService.getProductById("non-existing-id"));
+        assertThrows(ProductNotFoundException.class, () -> productService.getProductById(UUID.randomUUID()));
     }
 
-    private static Product buildProduct(String productId) {
+    private static Product buildProduct(UUID productId) {
         return Product.builder()
                 .id(productId)
-                .name("Test Product")
+                .name("Test galaxy Product")
                 .description("Test Description")
                 .price(100.0)
                 .category("Test Category")

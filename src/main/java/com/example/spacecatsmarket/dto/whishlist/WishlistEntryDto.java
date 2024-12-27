@@ -5,13 +5,17 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.UUID;
+
 @Value
 @Builder
 @Jacksonized
 public class WishlistEntryDto {
 
+    UUID customerId;
+
     @NotNull(message = "Product ID cannot be null")
-    String productId;
+    UUID productId;
 
     @NotNull(message = "Notified flag cannot be null")
     boolean notifiedWhenAvailable;

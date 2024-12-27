@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    @Mapping(target = "id", source = "product.id")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "product.name")
     @Mapping(target = "description", source = "product.description")
     @Mapping(target = "price", source = "product.price")
@@ -16,7 +16,7 @@ public interface ProductMapper {
     @Mapping(target = "category", source = "product.category")
     ProductDto toProductDto(Product product);
 
-    @Mapping(target = "id", source = "productDto.id")
+    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID())")
     @Mapping(target = "name", source = "productDto.name")
     @Mapping(target = "description", source = "productDto.description")
     @Mapping(target = "price", source = "productDto.price")

@@ -3,11 +3,13 @@ package com.example.spacecatsmarket.domain.wishlist;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.UUID;
+
 @Value
 @Builder
 public class WishlistEntry {
 
-    Long customerId;
-    String productId;
+    UUID customerId;
+    UUID productId;
     boolean notifiedWhenAvailable;
 }

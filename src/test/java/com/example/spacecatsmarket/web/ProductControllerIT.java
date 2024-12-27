@@ -14,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,16 +34,15 @@ class ProductControllerIT extends AbstractIt {
     private ProductService productService;
 
     private final ProductDto TEST_PRODUCT = ProductDto.builder()
-            .id("1")
-            .name("Test Product")
+            .id(UUID.fromString("d1bc1da4-04d6-4ef7-9ed3-3e8857d6e895"))
+            .name("Test star Product")
             .description("Test Product Description")
             .price(100.0)
             .category("Test Category")
             .build();
 
     private final ProductDto UPDATED_TEST_PRODUCT = ProductDto.builder()
-            .id("12345")
-            .name("Test Product")
+            .name("Test star Product")
             .description("Test Product Description")
             .price(100.0)
             .category("Updated Category")
@@ -82,14 +83,14 @@ class ProductControllerIT extends AbstractIt {
 
     @Test
     void shouldGetProductById() throws Exception {
-        mockMvc.perform(get("/api/v1/products/{productId}", "12345"))
+        mockMvc.perform(get("/api/v1/products/{productId}", "d1bc1da4-04d6-4ef7-9ed3-3e8857d6e895"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("12345"));
+                .andExpect(jsonPath("$.name").value("Test star Product"));
     }
 
     @Test
     void shouldUpdateProduct() throws Exception {
-        mockMvc.perform(put("/api/v1/products/{productId}", "12345")
+        mockMvc.perform(put("/api/v1/products/{productId}", "d1bc1da4-04d6-4ef7-9ed3-3e8857d6e895")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(UPDATED_TEST_PRODUCT)))
                 .andExpect(status().isOk())
@@ -98,7 +99,7 @@ class ProductControllerIT extends AbstractIt {
 
     @Test
     void shouldDeleteProduct() throws Exception {
-        mockMvc.perform(delete("/api/v1/products/{productId}", "12345"))
+        mockMvc.perform(delete("/api/v1/products/{productId}", "d1bc1da4-04d6-4ef7-9ed3-3e8857d6e895"))
                 .andExpect(status().isNoContent());
     }
 }

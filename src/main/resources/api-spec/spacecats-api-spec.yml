@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Customer API
-  description: API for managing customer data
+  title: Spacecats Market API
+  description: API for managing customers, products, and orders
   version: 1.0.0
 
 paths:
@@ -52,7 +52,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
+            type: string
           description: ID of the customer to retrieve
       responses:
         '200':
@@ -67,6 +67,108 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/products:
+    get:
+      summary: Get all products
+      tags:
+        - Products
+      responses:
+        '200':
+          description: List of all products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDtoList'
+    post:
+      summary: Create a new product
+      tags:
+        - Products
+      requestBody:
+        description: Product data to create a new product
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDto'
+      responses:
+        '200':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDto'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/v1/products/{productId}:
+    get:
+      summary: Get product by ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+          description: ID of the product to retrieve
+      responses:
+        '200':
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDto'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/{customerReference}/orders/{cartId}:
+    post:
+      summary: Place an order
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: customerReference
+          required: true
+          schema:
+            type: string
+          description: Customer reference for the order
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: string
+          description: Cart ID for the order
+      requestBody:
+        description: Order data to place a new order
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequestDto'
+      responses:
+        '200':
+          description: Order placed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOrderResponseDto'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
 
 components:
   schemas:
@@ -126,6 +228,58 @@ components:
           items:
             type: string
           description: Preferred communication channels
+
+    ProductDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the product
+        price:
+          type: number
+          description: Price of the product
+        description:
+          type: string
+          description: Description of the product
+
+    ProductDtoList:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDto'
+
+    PlaceOrderRequestDto:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderEntryDto'
+        totalPrice:
+          type: number
+          description: Total price of the order
+
+    PlaceOrderResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the order
+        status:
+          type: string
+          description: Status of the order
+
+    OrderEntryDto:
+      type: object
+      properties:
+        productType:
+          type: string
+          description: Type of the product
+        amount:
+          type: number
+          description: Amount of the product
 
     ValidationError:
       type: object

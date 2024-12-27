@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+import java.util.UUID;
+
 @Value
 @Builder(toBuilder = true)
 @RequiredArgsConstructor
 public class CategoryDto {
 
-    Long id;
+    UUID id;
 
     @NotNull(message = "Category name cannot be null")
     @Size(min = 3, max = 50, message = "Category name must be between 3 and 50 characters")

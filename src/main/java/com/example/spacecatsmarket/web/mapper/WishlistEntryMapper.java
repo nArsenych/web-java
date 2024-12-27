@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface WishlistEntryMapper {
 
+    @Mapping(target = "customerId", source = "wishlistEntry.customerId")
     @Mapping(target = "productId", source = "wishlistEntry.productId")
     @Mapping(target = "notifiedWhenAvailable", source = "wishlistEntry.notifiedWhenAvailable")
     WishlistEntryDto toWishlistEntryDto(WishlistEntry wishlistEntry);

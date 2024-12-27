@@ -2,7 +2,6 @@ package com.example.spacecatsmarket.dto.customer;
 
 
 import com.example.spacecatsmarket.validation.ExtendedValidation;
-import com.example.spacecatsmarket.validation.ValidSpaceAddress;
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +12,7 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
+import java.util.UUID;
 
 @Value
 @Builder(toBuilder = true)
@@ -20,13 +20,14 @@ import java.util.List;
 @GroupSequence({ CustomerDetailsDto.class, ExtendedValidation.class})
 public class CustomerDetailsDto {
 
+    UUID id;
+
     @NotBlank(message = "Name is mandatory")
     @Size(max = 100, message = "Name cannot exceed 100 characters")
     String name;
 
     @NotBlank(message = "Address is mandatory")
     @Size(max = 255, message = "Address cannot exceed 255 characters")
-    @ValidSpaceAddress(groups = ExtendedValidation.class)
     String address;
 
     @NotBlank(message = "Phone number is mandatory")
