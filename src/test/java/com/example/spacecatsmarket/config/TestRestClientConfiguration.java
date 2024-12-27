@@ -9,8 +9,8 @@ import org.springframework.web.client.RestClient;
 @TestConfiguration
 public class TestRestClientConfiguration {
 
-    @Bean("paymentRestClient")
-    public RestClient restClient() {
+    @Bean("testOrderAuditRestClient")
+    public RestClient testOrderAuditRestClient() {
         return RestClient.builder()
                 .requestFactory(ClientHttpRequestFactories.get(ClientHttpRequestFactorySettings.DEFAULTS))
                 .build();

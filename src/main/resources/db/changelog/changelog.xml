@@ -6,8 +6,13 @@
 
     <!-- Category Table -->
     <changeSet id="1-create-category-table" author="dev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="categories"/>
+            </not>
+        </preConditions>
         <createTable tableName="categories">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(255)">
@@ -17,10 +22,11 @@
         </createTable>
     </changeSet>
 
+
     <!-- Product Table -->
     <changeSet id="2-create-product-table" author="dev">
         <createTable tableName="products">
-            <column name="id" type="BIGINT">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(255)">
@@ -33,7 +39,7 @@
             <column name="stock" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="category_id" type="BIGINT">
+            <column name="category_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -44,7 +50,7 @@
     <!-- Customer Table -->
     <changeSet id="3-create-customer-table" author="dev">
         <createTable tableName="customers">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(255)">
@@ -53,7 +59,7 @@
             <column name="address" type="TEXT"/>
             <column name="phone_number" type="VARCHAR(15)"/>
             <column name="email" type="VARCHAR(255)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -64,7 +70,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="customer_id" type="BIGINT">
+            <column name="customer_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
             <column name="channel" type="VARCHAR(255)">
@@ -75,15 +81,13 @@
                                  constraintName="fk_customer_channels_customer" referencedTableName="customers" referencedColumnNames="id"/>
     </changeSet>
 
+    <!-- Order Table -->
     <changeSet id="5-create-order-table" author="dev">
         <createTable tableName="orders">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="transaction_id" type="UUID">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="cart_id" type="VARCHAR(255)">
+            <column name="cart_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
             <column name="consumer_reference" type="VARCHAR(255)"/>
@@ -93,33 +97,37 @@
         </createTable>
     </changeSet>
 
-
     <!-- Order Entries Table -->
     <changeSet id="6-create-order-entries-table" author="dev">
         <createTable tableName="order_entries">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="order_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_order_entries_order" referencedTableName="orders" referencedColumnNames="id"/>
+            <column name="order_id" type="UUID">
+                <constraints nullable="false"/>
             </column>
-            <column name="product_id" type="BIGINT"/>
-            <column name="product_type" type="varchar(255)"/>
-            <column name="amount" type="integer"/>
+            <column name="product_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_type" type="VARCHAR(255)"/>
+            <column name="amount" type="INT"/>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="order_entries"
+                                 constraintName="fk_order_entries_order" referencedTableName="orders" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseColumnNames="product_id" baseTableName="order_entries"
+                                 constraintName="fk_order_entries_product" referencedTableName="products" referencedColumnNames="id"/>
     </changeSet>
-
 
     <!-- Wishlist Table -->
     <changeSet id="7-create-wishlist-table" author="dev">
         <createTable tableName="wishlist_entries">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="customer_id" type="BIGINT">
+            <column name="customer_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="product_id" type="BIGINT">
+            <column name="product_id" type="UUID">
                 <constraints nullable="false"/>
             </column>
             <column name="notified_when_available" type="BOOLEAN" defaultValueBoolean="false"/>

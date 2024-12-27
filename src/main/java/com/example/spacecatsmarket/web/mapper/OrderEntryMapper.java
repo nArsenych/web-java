@@ -11,11 +11,9 @@ public interface OrderEntryMapper {
 
     @Mapping(target = "productType", source = "productType")
     @Mapping(target = "amount", source = "amount")
-    @Mapping(target = "productId", source = "product.id")
-    OrderEntry toOrderEntry(OrderEntryEntity entity);
+    OrderEntryEntity toOrderEntryEntity(OrderEntry entry);
 
     @Mapping(target = "productType", source = "productType")
     @Mapping(target = "amount", source = "amount")
-    @Mapping(target = "product.id", source = "productId")
-    OrderEntryEntity toOrderEntryEntity(OrderEntry entry);
+    OrderEntry toOrderEntry(OrderEntryEntity entity);
 }

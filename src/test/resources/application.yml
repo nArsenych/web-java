@@ -1,9 +1,11 @@
 spring:
   application:
-    name: space-cats-market
+    name: spacecats-market
+
   liquibase:
     change-log: classpath:db/changelog/changelog.xml
     enabled: true
+
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
@@ -12,7 +14,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
@@ -20,13 +22,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 application:
-  greetings:
-    cosmo-cat:
-      name: cosmo-cat
-      message: Hello from space cat ${application.greetings.cosmo-cat.name}
-  payment-service:
+  order-audit-service:
     base-path: http://localhost:8089
-    payments: ${application.payment-service.base-path}/payment-service/v1/payments
+    orders: ${application.order-audit-service.base-path}/order-audit/v1/orders
   feature:
     toggles:
       galactic-products: false

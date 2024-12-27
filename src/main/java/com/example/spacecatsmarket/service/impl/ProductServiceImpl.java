@@ -4,7 +4,9 @@ import com.example.spacecatsmarket.domain.product.Product;
 import com.example.spacecatsmarket.repository.CategoryRepository;
 import com.example.spacecatsmarket.repository.ProductRepository;
 import com.example.spacecatsmarket.repository.entity.CategoryEntity;
+import com.example.spacecatsmarket.repository.entity.CustomerEntity;
 import com.example.spacecatsmarket.repository.entity.ProductEntity;
+import com.example.spacecatsmarket.service.exception.CustomerNotFoundException;
 import com.example.spacecatsmarket.service.exception.ProductNotFoundException;
 import com.example.spacecatsmarket.service.interfaces.ProductService;
 import com.example.spacecatsmarket.web.mapper.ProductMapper;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,22 +30,24 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductMapper productMapper;
 
-    @Override
-    public Product createProduct(Product product) {
-        ProductEntity entity = productMapper.toProductEntity(product);
-        ProductEntity savedEntity = productRepository.save(entity);
-        log.info("Product created with ID: {}", savedEntity.getId());
-        return productMapper.toProduct(savedEntity);
+    @Override public Product createProduct(Product product) {
+        CategoryEntity categoryEntity = categoryRepository.findByName(product.getCategory())
+                .orElseGet(() -> categoryRepository.save(new CategoryEntity(null, product.getCategory(), null)));
+        ProductEntity productEntity = productMapper.toProductEntity(product);
+        productEntity.setCategory(categoryEntity);
+        productEntity = productRepository.save(productEntity);
+        return productMapper.toProduct(productEntity);
     }
 
     @Override
-    public Optional<Product> getProductById(Long productId) {
-        return productRepository.findById(productId)
-                .map(productMapper::toProduct);
+    public Product getProductById(UUID productId) {
+        ProductEntity productEntity = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+        return productMapper.toProduct(productEntity);
     }
 
     @Override
-    public boolean existsById(Long productId) {
+    public boolean existsById(UUID productId) {
         return productRepository.existsById(productId);
     }
 
@@ -55,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Long productId, Product updatedProduct) {
+    public Product updateProduct(UUID productId, Product updatedProduct) {
         ProductEntity entity = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
         entity.setName(updatedProduct.getName());
@@ -73,11 +78,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long productId) {
+    public void deleteProduct(UUID productId) {
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException(productId);
         }
         productRepository.deleteById(productId);
-        log.info("Product deleted with ID: {}", productId);
     }
 }

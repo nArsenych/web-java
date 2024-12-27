@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +28,7 @@ public class WishlistController {
 
     @PostMapping
     public ResponseEntity<Void> addToWishlist(
-            @PathVariable Long customerId,
+            @PathVariable UUID customerId,
             @RequestBody @Valid WishlistEntryDto wishlistEntryDto) {
         WishlistEntry wishlistEntry = wishlistEntryMapper.toWishlistEntry(wishlistEntryDto);
         wishlistService.addToWishlist(customerId, wishlistEntry);
@@ -36,14 +37,14 @@ public class WishlistController {
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> removeFromWishlist(
-            @PathVariable Long customerId,
-            @PathVariable Long productId) {
+            @PathVariable UUID customerId,
+            @PathVariable UUID productId) {
         wishlistService.removeFromWishlist(customerId, productId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistEntryDto>> getWishlist(@PathVariable Long customerId) {
+    public ResponseEntity<List<WishlistEntryDto>> getWishlist(@PathVariable UUID customerId) {
         List<WishlistEntryDto> wishlist = wishlistService.getWishlist(customerId).stream()
                 .map(wishlistEntryMapper::toWishlistEntryDto)
                 .collect(Collectors.toList());

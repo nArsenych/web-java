@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,9 +33,8 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
-        Product product = productService.getProductById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+    public ResponseEntity<ProductDto> getProductById(@PathVariable UUID productId) {
+        Product product = productService.getProductById(productId);
         return ResponseEntity.ok(productMapper.toProductDto(product));
     }
 
@@ -48,7 +48,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDto> updateProduct(
-            @PathVariable Long productId,
+            @PathVariable UUID productId,
             @RequestBody @Valid ProductDto productDto) {
         Product updatedProduct = productMapper.toProduct(productDto);
         Product product = productService.updateProduct(productId, updatedProduct);
@@ -56,7 +56,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
         if (productService.existsById(productId)) {
             productService.deleteProduct(productId);
         }

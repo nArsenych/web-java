@@ -5,12 +5,13 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
+import java.util.UUID;
 
 @Value
 @Builder
 @Jacksonized
 public class CustomerDetailsEntry {
-    Long id;
+    UUID id;
     String name;
     String address;
     String phoneNumber;

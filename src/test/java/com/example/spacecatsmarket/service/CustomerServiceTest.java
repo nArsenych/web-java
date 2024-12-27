@@ -1,6 +1,9 @@
 package com.example.spacecatsmarket.service;
 
+import com.example.spacecatsmarket.AbstractIt;
 import com.example.spacecatsmarket.domain.customer.CustomerDetails;
+import com.example.spacecatsmarket.repository.CustomerRepository;
+import com.example.spacecatsmarket.repository.entity.CustomerEntity;
 import com.example.spacecatsmarket.service.exception.CustomerNotFoundException;
 import com.example.spacecatsmarket.service.interfaces.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,14 +12,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,40 +25,31 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 @ExtendWith(SpringExtension.class)
 @DisplayName("Customer Service Tests")
-class CustomerServiceTest {
-
-    @Container
-    private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:15.3")
-            .withDatabaseName("test_db")
-            .withUsername("test_user")
-            .withPassword("test_password");
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRESQL_CONTAINER::getUsername);
-        registry.add("spring.datasource.password", POSTGRESQL_CONTAINER::getPassword);
-
-        registry.add("spring.liquibase.url", POSTGRESQL_CONTAINER::getJdbcUrl);
-        registry.add("spring.liquibase.user", POSTGRESQL_CONTAINER::getUsername);
-        registry.add("spring.liquibase.password", POSTGRESQL_CONTAINER::getPassword);
-    }
+class CustomerServiceTest extends AbstractIt {
 
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
+
+    private static UUID CUSTOMER_ID;
+
     @BeforeEach
     void setup() {
-        customerService.getAllCustomerDetails().forEach(customer -> customerService.deleteCustomer(customer.getId()));
+        customerRepository.deleteAll();
 
-        CustomerDetails testCustomer = CustomerDetails.builder()
-                .id(1L)
-                .name("Test Customer")
-                .email("test@example.com")
-                .phoneNumber("+123456789")
-                .address("Test Address")
-                .build();
-        customerService.createCustomer(testCustomer);
+        CustomerEntity customerEntity = new CustomerEntity();
+        customerEntity.setName("Test Customer");
+        customerEntity.setAddress("Test Address");
+        customerEntity.setPhoneNumber("+123456789");
+        customerEntity.setEmail("test@example.com");
+        customerEntity.setPreferredChannel(List.of("EMAIL"));
+
+        customerRepository.save(customerEntity);
+
+        CUSTOMER_ID = customerEntity.getId();
     }
 
     @Test
@@ -70,17 +62,17 @@ class CustomerServiceTest {
 
     @Test
     void shouldGetCustomerDetailsById() {
-        CustomerDetails customer = customerService.getCustomerDetailsById(1L);
+        CustomerDetails customer = customerService.getCustomerDetailsById(CUSTOMER_ID);
 
         assertNotNull(customer, "Customer should not be null.");
-        assertEquals(1L, customer.getId(), "Customer ID should match the expected value.");
+        assertEquals(CUSTOMER_ID, customer.getId(), "Customer ID should match the expected value.");
         assertEquals("Test Customer", customer.getName(), "Customer name should match the expected value.");
     }
 
     @Test
     void shouldThrowExceptionIfCustomerNotFound() {
         assertThrows(CustomerNotFoundException.class,
-                () -> customerService.getCustomerDetailsById(99L),
+                () -> customerService.getCustomerDetailsById(UUID.randomUUID()),
                 "Expected exception not thrown for non-existent customer ID.");
     }
 }

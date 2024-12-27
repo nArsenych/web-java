@@ -5,10 +5,10 @@ networks:
     name: cluster
 
 services:
-  galactic-payment-mock:
-    container_name: galactic-payment-mock
+  galactic-order-mock:
+    container_name: galactic-order-mock
     build:
-      context: ./payment-mock
+      context: ./order-audit-mock
     networks:
       - services
     healthcheck:
@@ -19,3 +19,17 @@ services:
       retries: 3         # number of retries before considering the service unhealthy
     ports:
       - "8089:8080"
+
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: testdb
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

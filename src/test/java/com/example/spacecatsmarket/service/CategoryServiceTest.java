@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,7 +69,7 @@ class CategoryServiceTest extends AbstractIt {
 
     @Test
     void shouldThrowExceptionIfCategoryNotFound() {
-        assertThrows(CategoryNotFoundException.class, () -> categoryService.getById(999L),
+        assertThrows(CategoryNotFoundException.class, () -> categoryService.getById(UUID.randomUUID()),
                 "Expected exception not thrown for non-existent category ID.");
     }
 

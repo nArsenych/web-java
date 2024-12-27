@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getById(Long id) {
+    public Category getById(UUID id) {
         CategoryEntity entity = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
         return categoryMapper.toCategory(entity);
@@ -51,22 +52,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category update(Long id, Category updatedCategory) {
+    public Category update(UUID id, Category updatedCategory) {
         CategoryEntity existingEntity = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new CategoryNotFoundException(id));
         existingEntity.setName(updatedCategory.getName());
         existingEntity.setDescription(updatedCategory.getDescription());
         CategoryEntity savedEntity = categoryRepository.save(existingEntity);
-        log.info("Category updated: {}", savedEntity);
+
         return categoryMapper.toCategory(savedEntity);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
+            new CategoryNotFoundException(id);
         }
         categoryRepository.deleteById(id);
-        log.info("Category deleted with id: {}", id);
     }
 }

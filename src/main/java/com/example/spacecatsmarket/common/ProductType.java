@@ -7,19 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ProductType {
 
-    COSMIC_CATNIP("Cosmic Catnip"),
-    NEBULA_NAPPING_PODS("Nebula Napping Pods"),
-    PLASMA_PAW_WARMERS("Plasma Paw Warmers");
+    ASTRO_MOUSE_TOYS("Astro Mouse Toys"),
+    MOONLIGHT_SCRATCHERS("Moonlight Scratchers"),
+    COMET_COLLAR_BELLS("Comet Collar Bells"),
+    QUASAR_CAT_BEDS("Quasar Cat Beds");
 
     private final String displayName;
-
-
-    public static ProductType fromDisplayName(String name) {
-        for (ProductType type : values()) {
-            if (type.displayName.equalsIgnoreCase(name)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException(String.format("No enum constant with display name: %s", name));
-    }
 }

@@ -115,16 +115,23 @@
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>1.9.22.1</version>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>${assertj.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.14.19</version>
     </dependency>
     <dependency>
       <groupId>org.wiremock</groupId>
@@ -133,14 +140,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>net.bytebuddy</groupId>
-      <artifactId>byte-buddy</artifactId>
-      <version>1.14.19</version>
-    </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjweaver</artifactId>
-      <version>1.9.22.1</version>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock-jre8</artifactId>
+      <version>2.35.2</version>
+      <scope>test</scope>
     </dependency>
 
     <!-- Liquibase -->
@@ -166,6 +169,11 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.5.3.Final</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -174,7 +182,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.3.4</version>
+        <version>3.3.4</version> <!-- Укажите текущую версию Spring Boot -->
       </plugin>
 
       <!-- Maven Compiler Plugin -->
@@ -216,8 +224,6 @@
           <driver>org.postgresql.Driver</driver>
         </configuration>
       </plugin>
-
-
 
       <!-- Jacoco Maven Plugin -->
       <plugin>

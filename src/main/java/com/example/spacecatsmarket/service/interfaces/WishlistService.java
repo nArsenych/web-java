@@ -3,12 +3,13 @@ package com.example.spacecatsmarket.service.interfaces;
 import com.example.spacecatsmarket.domain.wishlist.WishlistEntry;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface WishlistService {
 
-    void addToWishlist(Long customerId, WishlistEntry wishlistEntry);
+    void addToWishlist(UUID customerId, WishlistEntry wishlistEntry);
 
-    void removeFromWishlist(Long customerId, Long productId);
+    void removeFromWishlist(UUID customerId, UUID productId);
 
-    List<WishlistEntry> getWishlist(Long customerId);
+    List<WishlistEntry> getWishlist(UUID customerId);
 }

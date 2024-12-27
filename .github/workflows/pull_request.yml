@@ -33,5 +33,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-coverage-report
-          path: target/site/jacoco/index.html@v3
-       
+          path: target/site/jacoco/index.html

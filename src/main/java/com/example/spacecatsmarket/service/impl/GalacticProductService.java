@@ -1,7 +1,7 @@
 package com.example.spacecatsmarket.service.impl;
 
-import com.example.spacecatsmarket.featuretoggle.annotation.FeatureToggle;
 import com.example.spacecatsmarket.featuretoggle.FeatureToggles;
+import com.example.spacecatsmarket.featuretoggle.annotation.FeatureToggle;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

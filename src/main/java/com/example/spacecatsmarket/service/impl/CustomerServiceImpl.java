@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,12 +33,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDetails getCustomerDetailsById(Long customerId) {
+    public CustomerDetails getCustomerDetailsById(UUID customerId) {
         CustomerEntity customerEntity = customerRepository.findById(customerId)
-                .orElseThrow(() -> {
-                    log.info("Customer with id {} not found in database", customerId);
-                    return new CustomerNotFoundException(customerId);
-                });
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));
         return customDetailsMapper.toCustomerDetails(customerEntity);
     }
 
@@ -45,17 +43,14 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDetails createCustomer(CustomerDetails customerDetails) {
         CustomerEntity customerEntity = customDetailsMapper.toCustomerEntity(customerDetails);
         customerEntity = customerRepository.save(customerEntity);
-        log.info("Customer with id {} created successfully", customerEntity.getId());
         return customDetailsMapper.toCustomerDetails(customerEntity);
     }
 
     @Override
-    public void deleteCustomer(Long customerId) {
+    public void deleteCustomer(UUID customerId) {
         if (!customerRepository.existsById(customerId)) {
-            log.info("Attempted to delete customer with id {}, but it does not exist", customerId);
             throw new CustomerNotFoundException(customerId);
         }
         customerRepository.deleteById(customerId);
-        log.info("Customer with id {} deleted successfully", customerId);
     }
 }

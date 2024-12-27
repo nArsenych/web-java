@@ -3,14 +3,15 @@ package com.example.spacecatsmarket.service.interfaces;
 import com.example.spacecatsmarket.domain.customer.CustomerDetails;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CustomerService {
 
     List<CustomerDetails> getAllCustomerDetails();
 
-    CustomerDetails getCustomerDetailsById(Long customerId);
+    CustomerDetails getCustomerDetailsById(UUID customerId);
 
     CustomerDetails createCustomer(CustomerDetails customerDetails);
 
-    void deleteCustomer(Long customerId);
+    void deleteCustomer(UUID customerId);
 }
