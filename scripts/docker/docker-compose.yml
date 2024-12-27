@@ -1,0 +1,35 @@
+version: '3.8'
+
+networks:
+  services:
+    name: cluster
+
+services:
+  galactic-order-mock:
+    container_name: galactic-order-mock
+    build:
+      context: ./order-audit-mock
+    networks:
+      - services
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/__admin/requests || exit 1" ]
+      start_period: 10s  # increased to allow the container to initialize properly
+      interval: 5s       # interval between health checks
+      timeout: 2s        # timeout for each health check
+      retries: 3         # number of retries before considering the service unhealthy
+    ports:
+      - "8089:8080"
+
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: testdb
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
