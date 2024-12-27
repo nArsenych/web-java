@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: spacecats-market
+
+application:
+  order-audit-service:
+    base-path: http://localhost:8089
+    orders: ${application.order-audit-service.base-path}/order-audit/v1/orders
+    restclient:
+      response-timeout: 1000
+    timeout: 5000
+  feature:
+    toggles:
+      galactic-products: true
